@@ -12,23 +12,28 @@
       <div class="hero-inner">
         <h1 class="title">My Happy Place</h1>
         <button id="musicToggle" class="music-toggle" aria-label="Play background music">🎵</button>
+        <button id="exploreArrow" class="explore-arrow" aria-label="Explore photos">
+          <span class="arrow">⬇</span>
+          <span class="explore-label">Explore</span>
+        </button>
       </div>
     </header>
 
     <main class="page">
       <section class="scatter-feed">
         <div id="scatterGrid" class="scatter-grid" aria-live="polite">
-          <div class="polaroid"><img src="assets/eid_barhoma_house.jpeg" alt="eid barhoma house"><div class="caption">Home</div></div>
-          <div class="polaroid"><img src="assets/funny_tanoura.jpg" alt="funny tanoura"><div class="caption">Smile</div></div>
-          <div class="polaroid"><img src="assets/stairs_chicago_photoshoot.jpeg" alt="stairs chicago"><div class="caption">City</div></div>
-          <div class="polaroid"><img src="assets/wndr_museum.jpeg" alt="museum"><div class="caption">Museum</div></div>
+          <!-- Photos will appear after user scrolls or clicks "Explore" -->
         </div>
       </section>
     </main>
 
-    <footer class="footer">
-      <p>Scroll to see more. Click any photo to enlarge.</p>
-    </footer>
+    <!-- Reasons section: hearts will appear when scrolled into view -->
+    <section id="reasons" class="reasons-section">
+      <div class="reasons-inner">
+        <h2 class="reasons-title">Reasons Why I Love You</h2>
+        <div id="heartsContainer" class="hearts-container" aria-live="polite" aria-atomic="true"></div>
+      </div>
+    </section>
 
     <audio id="bgAudio" src="assets/until i found you.mp3" loop preload="auto"></audio>
 
