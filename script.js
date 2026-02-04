@@ -6,13 +6,125 @@ const lightboxCaption = document.getElementById('lightboxCaption');
 const musicToggle = document.getElementById('musicToggle');
 const bgAudio = document.getElementById('bgAudio');
 const exploreArrow = document.getElementById('exploreArrow');
+// AR Photo Filter elements
+const arSection = document.getElementById('ar');
+const arVideo = document.getElementById('arVideo');
+const arCanvas = document.getElementById('arCanvas');
+const startCameraBtn = document.getElementById('startCamera');
+const stopCameraBtn = document.getElementById('stopCamera');
+const toggleHeart = document.getElementById('toggleHeart');
+const heartSizeInput = document.getElementById('heartSize');
+const captureBtn = document.getElementById('capturePhoto');
+const captureResult = document.getElementById('captureResult');
 
-// list of images present in the assets folder (detected earlier)
+let arStream = null;
+let arAnimId = null;
+
+function startCamera(){
+  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return;
+  navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false })
+    .then(stream => {
+      arStream = stream;
+      arVideo.srcObject = stream;
+      arVideo.play().catch(()=>{});
+      arVideo.addEventListener('loadedmetadata', () => {
+        setupCanvasSize();
+        drawAR();
+      }, {once:true});
+    })
+    .catch(err => console.warn('Camera access denied', err));
+}
+
+function stopCamera(){
+  if(arStream){
+    arStream.getTracks().forEach(t=>t.stop());
+    arStream = null;
+  }
+  if(arAnimId) cancelAnimationFrame(arAnimId);
+  if(arCanvas) {
+    const ctx = arCanvas.getContext('2d');
+    ctx && ctx.clearRect(0,0,arCanvas.width, arCanvas.height);
+  }
+}
+
+function setupCanvasSize(){
+  if(!arVideo || !arCanvas) return;
+  const w = arVideo.videoWidth || arVideo.clientWidth;
+  const h = arVideo.videoHeight || Math.floor(w * 4/3);
+  arCanvas.width = w;
+  arCanvas.height = h;
+  arCanvas.style.width = arVideo.clientWidth + 'px';
+}
+
+function drawAR(){
+  if(!arCanvas || !arVideo) return;
+  const ctx = arCanvas.getContext('2d');
+  function frame(){
+    if(arVideo.paused || arVideo.ended) { arAnimId = requestAnimationFrame(frame); return; }
+    // draw video frame
+    try{ ctx.drawImage(arVideo, 0, 0, arCanvas.width, arCanvas.height); }catch(e){}
+    // overlay heart emoji and initials (MT)
+    if(toggleHeart && toggleHeart.checked){
+      const size = parseInt(heartSizeInput ? heartSizeInput.value : 160, 10) || 160;
+      const cx = arCanvas.width / 2;
+      const cy = arCanvas.height / 2;
+      // draw heart emoji with subtle shadow
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.font = `${size}px serif`;
+      ctx.fillStyle = 'rgba(0,0,0,0.18)';
+      ctx.fillText('❤️', cx + 6, cy + 6);
+      ctx.fillStyle = 'rgba(255,80,120,0.95)';
+      ctx.fillText('❤️', cx, cy);
+
+      // draw initials centered in the heart
+      const initials = 'MT';
+      const initialsSize = Math.floor(size * 0.34); // slightly smaller
+      ctx.font = `bold ${initialsSize}px Inter, sans-serif`;
+      // position a bit higher inside the heart (nudged up)
+      const initialsY = cy - Math.max(8, Math.floor(size * 0.155));
+      // small shadow for legibility
+      ctx.fillStyle = 'rgba(0,0,0,0.36)';
+      ctx.fillText(initials, cx + 3, initialsY + 3);
+      ctx.fillStyle = 'white';
+      ctx.fillText(initials, cx, initialsY);
+    }
+    arAnimId = requestAnimationFrame(frame);
+  }
+  frame();
+}
+
+function captureImage(){
+  if(!arCanvas) return;
+  const data = arCanvas.toDataURL('image/png');
+  // show result preview and download link
+  captureResult.innerHTML = '';
+  const img = document.createElement('img'); img.src = data; img.alt = 'capture';
+  const a = document.createElement('a'); a.href = data; a.download = 'talia_capture.png'; a.textContent = 'Download Photo'; a.className='btn';
+  captureResult.appendChild(img); captureResult.appendChild(document.createElement('br'));
+  captureResult.appendChild(a);
+}
+
+// wire AR controls
+if(startCameraBtn) startCameraBtn.addEventListener('click', startCamera);
+if(stopCameraBtn) stopCameraBtn.addEventListener('click', stopCamera);
+if(captureBtn) captureBtn.addEventListener('click', captureImage);
+
+
+// list of images present in the assets folder (user-added)
 const IMAGE_LIST = [
-  {src: 'assets/eid_barhoma_house.jpeg', caption: 'Home'},
-  {src: 'assets/funny_tanoura.jpg', caption: 'Smile'},
-  {src: 'assets/stairs_chicago_photoshoot.jpeg', caption: 'City'},
-  {src: 'assets/wndr_museum.jpeg', caption: 'Museum'}
+  { src: 'assets/eid_barhoma_house.jpeg' },
+  { src: 'assets/funny_tanoura.jpg' },
+  { src: 'assets/stairs_chicago_photoshoot.jpeg' },
+  { src: 'assets/wndr_museum.jpeg' },
+  { src: 'assets/basye.jpeg' },
+  { src: 'assets/engagement_sign.jpeg' },
+  { src: 'assets/engagement_1.jpg' },
+  { src: 'assets/chicago_photoshoot_1.jpg' },
+  { src: 'assets/touty_pouting.jpg' },
+  { src: 'assets/jinya.jpg' },
+  { src: 'assets/touty_cat_1.jpg' },
+  { src: 'assets/touty_grad_1.jpg' }
 ];
 
 function randomizePolaroids(){
@@ -27,8 +139,7 @@ function randomizePolaroids(){
     p.addEventListener('click', ()=>{
       const img = p.querySelector('img');
       const src = img ? img.src : '';
-      const cap = p.querySelector('.caption') ? p.querySelector('.caption').textContent : '';
-      showLightbox(src, cap);
+      showLightbox(src, '');
     });
   });
 }
@@ -89,9 +200,8 @@ function revealPhotos(){
   
   IMAGE_LIST.forEach((it, idx)=>{
     const wrap = document.createElement('div'); wrap.className = 'polaroid';
-    const img = document.createElement('img'); img.src = it.src; img.alt = it.caption || '';
-    const cap = document.createElement('div'); cap.className = 'caption'; cap.textContent = it.caption || '';
-    wrap.appendChild(img); wrap.appendChild(cap);
+    const img = document.createElement('img'); img.src = it.src; img.alt = '';
+    wrap.appendChild(img);
     
     // Set random rotation for scattered effect
     const rotation = (Math.random() * 8) - 4; // Random rotation between -4 and 4 degrees

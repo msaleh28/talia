@@ -486,6 +486,22 @@
   }
 }
 
+/* AR Photo Filter */
+.ar-section {
+  @apply py-12 bg-gradient-to-b from-white to-pink-50;
+}
+.ar-inner { @apply max-w-4xl mx-auto px-6 text-center; }
+.ar-title { @apply text-3xl font-semibold mb-4; }
+.ar-stage { position: relative; width: 100%; max-width: 560px; margin: 0 auto; }
+.ar-video, .ar-canvas { width: 100%; height: auto; border-radius: 1rem; display: block; }
+.ar-canvas { position: absolute; left: 0; top: 0; pointer-events: none; }
+.ar-controls { @apply mt-4 flex flex-wrap gap-3 justify-center items-center; }
+.ar-controls .btn { @apply px-4 py-2 rounded-lg bg-white border; }
+.ar-controls .btn.primary { @apply bg-teal-400 text-white border-transparent; }
+.ar-controls .toggle, .ar-controls .size { @apply flex items-center gap-2 text-sm; }
+.capture-result { @apply mt-4; }
+.capture-result img { @apply rounded-lg max-w-full shadow-lg; }
+
 /* Touch devices */
 @media (hover: none) and (pointer: coarse) {
   .scatter-grid .polaroid:hover {
