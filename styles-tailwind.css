@@ -241,12 +241,87 @@
     fill: url(#grad-teal);
     filter: drop-shadow(0 2px 4px rgba(42, 166, 163, 0.3));
   }
+
+  .quiz-section {
+    @apply py-20 px-5;
+    background: linear-gradient(180deg, rgba(232, 248, 247, 0.5) 0%, rgba(122, 201, 197, 0.05) 100%);
+  }
+
+  .quiz-inner {
+    @apply max-w-4xl mx-auto text-center px-4 w-full;
+  }
+
+  .quiz-title {
+    @apply text-5xl mb-12 font-bold;
+    font-family: 'Playfair Display', serif;
+    color: #2aa6a3;
+    letter-spacing: 0.02em;
+  }
+
+  .quiz-container {
+    @apply flex flex-col gap-16;
+  }
+
+  .quiz-question {
+    @apply bg-white rounded-2xl p-8 shadow-lg;
+    animation: fadeInUp 1s ease-out;
+  }
+
+  .question-text {
+    @apply text-2xl font-semibold mb-6 text-left;
+    color: #2aa6a3;
+    font-family: 'Playfair Display', serif;
+  }
+
+  .quiz-options {
+    @apply flex flex-col gap-4;
+  }
+
+  .quiz-option {
+    @apply w-full px-6 py-4 text-left font-semibold border-2 border-teal rounded-xl cursor-pointer transition-all duration-300;
+    background: white;
+    color: #2aa6a3;
+    border-color: #2aa6a3;
+  }
+
+  .quiz-option:hover:not(.correct):not(.incorrect) {
+    @apply bg-blue-50 scale-102;
+  }
+
+  .quiz-option.correct {
+    @apply bg-green-100 border-green-500 text-green-700;
+  }
+
+  .quiz-option.incorrect {
+    @apply bg-red-100 border-red-500 text-red-700;
+  }
+
+  .quiz-option:disabled {
+    @apply cursor-not-allowed;
+  }
+
+  .confetti {
+    @apply fixed pointer-events-none;
+    width: 10px;
+    height: 10px;
+    animation: confettiFall 3s ease-out forwards;
+  }
+}
+
+@keyframes confettiFall {
+  to {
+    transform: translateY(100vh) rotate(360deg);
+    opacity: 0;
+  }
 }
 
 /* Responsive adjustments */
 @media (max-width: 1200px) {
   .scatter-grid {
     @apply gap-20;
+  }
+  .quiz-title {
+    @apply text-4xl;
   }
 }
 
@@ -266,6 +341,18 @@
   }
   .reasons-title {
     @apply text-4xl mb-8;
+  }
+  .quiz-title {
+    @apply text-4xl;
+  }
+  .quiz-question {
+    @apply p-6;
+  }
+  .question-text {
+    @apply text-xl;
+  }
+  .quiz-option {
+    @apply px-4 py-3 text-base;
   }
 }
 
@@ -317,6 +404,21 @@
   .reasons-title {
     @apply text-3xl mb-6;
   }
+  .quiz-section {
+    @apply py-12 px-4;
+  }
+  .quiz-title {
+    @apply text-3xl mb-8;
+  }
+  .quiz-question {
+    @apply p-4 rounded-xl;
+  }
+  .question-text {
+    @apply text-lg mb-4;
+  }
+  .quiz-option {
+    @apply px-4 py-3 text-sm border;
+  }
   .modal {
     width: calc(100% - 2rem) !important;
     @apply p-5 rounded-2xl;
@@ -347,6 +449,12 @@
     font-size: 0.7rem;
     padding: 0.4rem 0.6rem;
   }
+  .quiz-title {
+    @apply text-2xl;
+  }
+  .question-text {
+    @apply text-base;
+  }
   .modal {
     width: calc(100% - 1rem) !important;
     @apply p-4 rounded-xl;
@@ -367,6 +475,10 @@
   .heart:hover {
     transform: rotate(var(--rot, 0deg)) scale(1);
     filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.08));
+  }
+  .quiz-option:hover:not(.correct):not(.incorrect) {
+    background: white;
+    transform: none;
   }
   .modal .modal-close:hover {
     background: white;

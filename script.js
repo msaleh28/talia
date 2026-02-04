@@ -171,3 +171,148 @@ if(reasonsSection){
   }, {threshold:0.35});
   obs.observe(reasonsSection);
 }
+
+/* Quiz Section */
+const quizContainer = document.getElementById('quizContainer');
+const quizSection = document.getElementById('quiz');
+
+const QUIZ_QUESTIONS = [
+  {
+    question: "What is Muhannad's favorite feature of Talia?",
+    options: ['Eyes', 'Hair', 'Face', 'Body'],
+    correct: [0, 1, 2, 3],
+    multiCorrect: true
+  },
+  {
+    question: "What is Muhannad's favorite experience with Talia?",
+    options: ['Big Sam Concert', 'Skydiving', 'Michigan Trip', 'DC Trip'],
+    correct: [1]
+  },
+  {
+    question: "What does Muhannad admire most about Talia's personality?",
+    options: ['Her kindness', 'Her strength', 'Her sense of humor', 'Her intelligence'],
+    correct: [0]
+  },
+  {
+    question: "What is one habit of Talia's that Muhannad secretly loves?",
+    options: ['The way she gets excited over small things', 'How she organizes everything', 'How she laughs at her own jokes', 'The way she overthinks'],
+    correct: [0, 1, 2, 3],
+    multiCorrect: true
+  },
+  {
+    question: "What does Muhannad think makes Talia a great wife?",
+    options: ['Her care', 'Her attitude', 'Her patience', 'Her love'],
+    correct: [2]
+  },
+  {
+    question: "What does Muhannad think is Talia's love language?",
+    options: ['Words of affirmation', 'Quality time', 'Acts of service', 'Physical touch'],
+    correct: [2]
+  },
+  {
+    question: "What does Muhannad think Talia doesn't realize about herself?",
+    options: ['How beautiful she is', 'How strong she is', 'How loved she is', 'How special she is'],
+    correct: [0, 1, 2, 3],
+    multiCorrect: true
+  },
+  {
+    question: "What does Talia do that Muhannad finds adorable?",
+    options: ['Getting excited', 'Being sleepy', 'Laughing', 'Teasing him'],
+    correct: [0]
+  },
+  {
+    question: "What has Talia made better in Muhannad's life?",
+    options: ['His happiness', 'His mindset', 'His sense of home', 'Everything'],
+    correct: [3]
+  }
+];
+
+function createConfetti() {
+  const colors = ['#ff6b8a', '#ff9bb8', '#57c4bf', '#2aa6a3', '#ffd700'];
+  for(let i = 0; i < 50; i++) {
+    const confetti = document.createElement('div');
+    confetti.className = 'confetti';
+    confetti.style.left = Math.random() * 100 + 'vw';
+    confetti.style.top = '0px';
+    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+    confetti.style.delay = Math.random() * 0.5 + 's';
+    confetti.style.animation = `confettiFall ${2 + Math.random() * 1}s ease-out forwards`;
+    document.body.appendChild(confetti);
+    
+    setTimeout(() => confetti.remove(), 3500);
+  }
+}
+
+function renderQuiz() {
+  if(!quizContainer) return;
+  
+  quizContainer.innerHTML = '';
+  QUIZ_QUESTIONS.forEach((q, qIndex) => {
+    const questionDiv = document.createElement('div');
+    questionDiv.className = 'quiz-question';
+    
+    const questionText = document.createElement('div');
+    questionText.className = 'question-text';
+    questionText.textContent = q.question;
+    questionDiv.appendChild(questionText);
+    
+    const optionsDiv = document.createElement('div');
+    optionsDiv.className = 'quiz-options';
+    
+    q.options.forEach((option, oIndex) => {
+      const btn = document.createElement('button');
+      btn.className = 'quiz-option';
+      btn.textContent = option;
+      btn.dataset.questionIndex = qIndex;
+      btn.dataset.optionIndex = oIndex;
+      
+      btn.addEventListener('click', (e) => {
+        handleQuizAnswer(e.target, qIndex, oIndex, q);
+      });
+      
+      optionsDiv.appendChild(btn);
+    });
+    
+    questionDiv.appendChild(optionsDiv);
+    quizContainer.appendChild(questionDiv);
+  });
+}
+
+function handleQuizAnswer(btn, questionIndex, optionIndex, question) {
+  // Disable all buttons for this question
+  const allButtons = document.querySelectorAll(`[data-question-index="${questionIndex}"]`);
+  allButtons.forEach(b => b.disabled = true);
+  
+  // Check if answer is correct
+  const isCorrect = question.correct.includes(optionIndex);
+  
+  if(isCorrect) {
+    btn.classList.add('correct');
+    createConfetti();
+  } else {
+    btn.classList.add('incorrect');
+  }
+  
+  // Show all correct answers
+  allButtons.forEach((b, idx) => {
+    if(question.correct.includes(idx) && !b.classList.contains('correct')) {
+      b.classList.add('correct');
+    } else if(!question.correct.includes(idx) && !b.classList.contains('incorrect')) {
+      b.classList.add('incorrect');
+    }
+  });
+}
+
+// Use IntersectionObserver to trigger quiz when section comes into view
+if(quizSection){
+  const quizObs = new IntersectionObserver((entries, observer)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){ 
+        renderQuiz(); 
+        observer.disconnect(); 
+      }
+    });
+  }, {threshold:0.2});
+  quizObs.observe(quizSection);
+}
+
