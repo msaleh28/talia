@@ -137,11 +137,11 @@ function revealHearts(){
   REASONS.forEach((t,i)=>{
     const cls = i%3===0? 'red' : (i%3===1? 'pink' : 'teal');
     const h = createHeart(t, cls);
-    // small random rotation for organic look
-    const rot = (Math.random()*12)-6; h.style.transform = `rotate(${rot}deg)`;
+    // set a CSS rotation variable for this heart so animation preserves it
+    const rot = (Math.random()*12)-6; h.style.setProperty('--rot', `${rot}deg`);
     heartsContainer.appendChild(h);
-    // animate with slight stagger
-    setTimeout(()=> h.classList.add('pop'), 180 * i);
+    // animate with slight stagger so they pop one at a time
+    setTimeout(()=> h.classList.add('pop'), 220 * i);
   });
 }
 
