@@ -1,0 +1,13 @@
+{
+  "name": "talia-wedding-page",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "live-server --port=3000 --open=./index.html",
+    "start": "npm run dev",
+    "deploy": "echo \"Deployment is handled by GitHub Actions. Push to main to deploy.\""
+  },
+  "devDependencies": {
+    "live-server": "^1.2.2"
+  }
+}
