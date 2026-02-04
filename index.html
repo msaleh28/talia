@@ -1,61 +1,45 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>For Talia — A Gift</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-  <main class="page">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>My Happy Place</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
     <header class="hero">
-      <div class="hero-content">
-        <h1 class="title">For Talia</h1>
-        <p class="subtitle">A small, dreamy story — with music and tiny surprises</p>
-        <button id="playGift" class="play-gift" aria-label="Play music and reveal surprises">🎁</button>
+      <div class="hero-inner">
+        <h1 class="title">My Happy Place</h1>
+        <button id="musicToggle" class="music-toggle" aria-label="Play background music">🎵</button>
       </div>
-      <div class="clouds" aria-hidden="true"></div>
     </header>
 
-    <section class="section story">
-      <h2>Our Story</h2>
-      <div class="timeline">
-        <div class="event"><strong>2022</strong><span>We met — and it was magic.</span></div>
-        <div class="event"><strong>2023</strong><span>Skydiving together — what a rush.</span></div>
-        <div class="event"><strong>Future</strong><span>Bungee jumping and more adventures.</span></div>
-      </div>
-    </section>
-
-    <section class="section gallery">
-      <h2>Moments</h2>
-      <div class="photos">
-        <div class="photo placeholder">Photo 1<br><small>Replace with your photo at /assets/1.jpg</small></div>
-        <div class="photo placeholder">Photo 2<br><small>Replace with your photo at /assets/2.jpg</small></div>
-        <div class="photo placeholder">Photo 3<br><small>Replace with your photo at /assets/3.jpg</small></div>
-      </div>
-    </section>
-
-    <section class="section loves">
-      <h2>Things you love</h2>
-      <ul class="icons">
-        <li class="icon">🧩<span>Legos</span></li>
-        <li class="icon">🪂<span>Adventures</span></li>
-        <li class="icon">🧁<span>Baking</span></li>
-        <li class="icon">🎁<span>Gift giving</span></li>
-      </ul>
-
-      <div class="lego-secret" id="legoSecret" title="Click the lego">🧱</div>
-      <div id="secretMessage" class="secret-message">Surprise! I love you ❤️</div>
-    </section>
+    <main class="page">
+      <section class="scatter-feed">
+        <div id="scatterGrid" class="scatter-grid" aria-live="polite">
+          <div class="polaroid"><img src="assets/eid_barhoma_house.jpeg" alt="eid barhoma house"><div class="caption">Home</div></div>
+          <div class="polaroid"><img src="assets/funny_tanoura.jpg" alt="funny tanoura"><div class="caption">Smile</div></div>
+          <div class="polaroid"><img src="assets/stairs_chicago_photoshoot.jpeg" alt="stairs chicago"><div class="caption">City</div></div>
+          <div class="polaroid"><img src="assets/wndr_museum.jpeg" alt="museum"><div class="caption">Museum</div></div>
+        </div>
+      </section>
+    </main>
 
     <footer class="footer">
-      <p>Made with love — click the gift to play music and find secrets.</p>
+      <p>Scroll to see more. Click any photo to enlarge.</p>
     </footer>
-  </main>
 
-  <canvas id="confettiCanvas" class="confetti-canvas" aria-hidden="true"></canvas>
+    <audio id="bgAudio" src="assets/until i found you.mp3" loop preload="auto"></audio>
 
-  <script src="script.js"></script>
-</body>
+    <div id="lightbox" class="modal" aria-hidden="true">
+      <button class="modal-close" aria-label="close">✕</button>
+      <div class="lightbox-inner">
+        <img id="lightboxImg" src="" alt="enlarged photo" />
+        <div id="lightboxCaption" class="caption"></div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
 </html>
