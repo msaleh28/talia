@@ -18,12 +18,12 @@ const IMAGE_LIST = [
 function randomizePolaroids(){
   const items = document.querySelectorAll('.scatter-grid .polaroid');
   items.forEach((p)=>{
-    const rot = (Math.random()*24)-12;
-    const tx = (Math.random()*20)-10;
-    const ty = (Math.random()*10)-5;
-    const s = 0.98 + Math.random()*0.06;
+    const rot = (Math.random()*8)-4; // reduced rotation for more polished look
+    const tx = (Math.random()*10)-5; // reduced translation
+    const ty = (Math.random()*4)-2;
+    const s = 0.99 + Math.random()*0.02; // minimal scale variation
     p.style.transform = `rotate(${rot}deg) translate(${tx}px, ${ty}px) scale(${s})`;
-    p.style.zIndex = `${10 + Math.floor(Math.random()*40)}`;
+    p.style.zIndex = `${10 + Math.floor(Math.random()*20)}`;
     p.addEventListener('click', ()=>{
       const img = p.querySelector('img');
       const src = img ? img.src : '';
@@ -83,16 +83,32 @@ function showPhotosOnce(){
 
 function revealPhotos(){
   if(!scatterGrid) return;
+  
+  // Check if photos have already been added
+  if(scatterGrid.querySelectorAll('.polaroid').length > 0) return;
+  
   IMAGE_LIST.forEach((it, idx)=>{
     const wrap = document.createElement('div'); wrap.className = 'polaroid';
     const img = document.createElement('img'); img.src = it.src; img.alt = it.caption || '';
     const cap = document.createElement('div'); cap.className = 'caption'; cap.textContent = it.caption || '';
     wrap.appendChild(img); wrap.appendChild(cap);
-    wrap.style.opacity = '0';
+    
+    // Set random rotation for scattered effect
+    const rotation = (Math.random() * 8) - 4; // Random rotation between -4 and 4 degrees
+    wrap.style.setProperty('--rotation', `${rotation}deg`);
+    
     scatterGrid.appendChild(wrap);
-    // staggered fade-in
-    setTimeout(()=>{ wrap.style.transition = 'opacity .45s ease, transform .45s ease'; wrap.style.opacity='1'; randomizePolaroids(); }, 120 * idx);
   });
+  // Use IntersectionObserver to animate photos as they scroll into view
+  const photoObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        entry.target.classList.add('in-view');
+      }
+    });
+  }, {threshold: 0.1});
+  
+  document.querySelectorAll('.scatter-grid .polaroid').forEach(photo => photoObserver.observe(photo));
 }
 
 /* Reasons hearts */
@@ -138,10 +154,11 @@ function revealHearts(){
     const cls = i%3===0? 'red' : (i%3===1? 'pink' : 'teal');
     const h = createHeart(t, cls);
     // set a CSS rotation variable for this heart so animation preserves it
-    const rot = (Math.random()*12)-6; h.style.setProperty('--rot', `${rot}deg`);
+    const rot = (Math.random()*20)-10; // Random rotation between -10 and 10 degrees
+    h.style.setProperty('--rot', `${rot}deg`);
     heartsContainer.appendChild(h);
-    // animate with slight stagger so they pop one at a time
-    setTimeout(()=> h.classList.add('pop'), 220 * i);
+    // animate with better stagger timing so they pop one at a time
+    setTimeout(()=> h.classList.add('pop'), 150 * i);
   });
 }
 

@@ -3,11 +3,18 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "live-server --port=3000 --open=./index.html",
+    "build:css": "npx tailwindcss -i ./styles-tailwind.css -o ./styles.css",
+    "watch:css": "npx tailwindcss -i ./styles-tailwind.css -o ./styles.css --watch",
+    "dev": "npm run watch:css & live-server --port=3000 --open=./index.html",
     "start": "npm run dev",
+    "build": "npm run build:css",
     "deploy": "echo \"Deployment is handled by GitHub Actions. Push to main to deploy.\""
   },
   "devDependencies": {
-    "live-server": "^1.2.2"
+    "@tailwindcss/cli": "^4.1.18",
+    "autoprefixer": "^10.4.24",
+    "live-server": "^1.2.2",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.18"
   }
 }
